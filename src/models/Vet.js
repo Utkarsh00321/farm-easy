@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
 
 const vetSchema = new mongoose.Schema({
@@ -15,7 +16,6 @@ const vetSchema = new mongoose.Schema({
   },
   availabilityStatus: {
     type: Boolean,
-    required: true,
     default: true
   },
   mobileNumber: {
@@ -31,7 +31,43 @@ const vetSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Farmer'
   }]
+}, {timestamps: true});
+
+
+vetSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+  return next();
 });
+
+vetSchema.methods.generateAccessToken = async function(){
+  return jwt.sign(
+      {
+          _id: this._id,
+          mobileNumber: this.mobileNumber
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+      }
+  )
+}
+
+
+vetSchema.methods.generateRefreshToken = async function(){
+  return jwt.sign(
+      {
+          _id: this._id
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+      }
+  )
+}
 
 const Vet = mongoose.models.Vet || mongoose.model('Vet', vetSchema);
 
