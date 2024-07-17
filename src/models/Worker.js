@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
+import jwt from "jsonwebtoken"
 
 const workerSchema = new mongoose.Schema({
   name: {
@@ -24,6 +25,9 @@ const workerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  refreshToken:{
+    type:String,
+   },
   acceptedWorks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Work'

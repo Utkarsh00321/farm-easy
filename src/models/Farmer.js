@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
+import jwt from "jsonwebtoken"
 
 const farmerSchema = new mongoose.Schema({
   name: {
@@ -19,7 +20,10 @@ const farmerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  vets: [{
+refreshToken:{
+ type:String,
+},
+vets: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vet'
   }]
@@ -47,6 +51,11 @@ farmerSchema.methods.generateAccessToken = async function(){
       }
   )
 }
+
+
+farmerSchema.methods.isPasswordCorrect = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 
 farmerSchema.methods.generateRefreshToken = async function(){

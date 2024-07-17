@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
+import jwt from "jsonwebtoken"
 
 const vetSchema = new mongoose.Schema({
   name: {
@@ -27,6 +28,9 @@ const vetSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  refreshToken:{
+    type:String,
+   },
   farmers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Farmer'
