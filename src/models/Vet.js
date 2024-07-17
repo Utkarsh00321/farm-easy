@@ -10,7 +10,7 @@ const vetSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    type: String,
+    type: String,                  
     required: true
   },
   availabilityStatus: {
@@ -27,10 +27,15 @@ const vetSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  farmers: [{
+  associatedFarmers: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Farmer'
-  }]
+    ref: 'Farmer',
+    default: []
+  }],
+  consultationFees: {
+    type: Number,
+    required: true
+}
 });
 
 const Vet = mongoose.models.Vet || mongoose.model('Vet', vetSchema);

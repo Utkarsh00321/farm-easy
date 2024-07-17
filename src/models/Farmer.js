@@ -18,9 +18,10 @@ const farmerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  vets: [{
+  associatedVets: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vet'
+    ref: 'Vet',
+    default: []
   }]
 });
 
