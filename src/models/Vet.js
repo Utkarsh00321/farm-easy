@@ -12,7 +12,7 @@ const vetSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    type: String,
+    type: String,                  
     required: true
   },
   availabilityStatus: {
@@ -28,13 +28,18 @@ const vetSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  associatedFarmers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Farmer',
+    default: []
+  }],
+  consultationFees: {
+    type: Number,
+    required: true
+  }
   refreshToken:{
     type:String,
    },
-  farmers: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Farmer'
-  }]
 }, {timestamps: true});
 
 

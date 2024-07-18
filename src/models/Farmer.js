@@ -20,12 +20,13 @@ const farmerSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-refreshToken:{
- type:String,
-},
-vets: [{
+  refreshToken:{
+      type:String,
+  },
+  associatedVets: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Vet'
+    ref: 'Vet',
+    default: []
   }]
 }, {timestamps: true});
 
