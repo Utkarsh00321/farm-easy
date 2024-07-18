@@ -1,26 +1,27 @@
 import dbConnect from '@/lib/dbConnect';
-import { auth } from '@/middleware/auth';
 import Work from '@/models/Work';
 import Worker from '@/models/Worker';
 
 // accept work
 export async function POST(req, res) {
-    const authResult = await auth(req);
-    if (authResult.status === 401) {
-        return authResult; 
-    }
+    // const authResult = await auth(req);
+    // if (authResult.status === 401) {
+    //     return authResult; 
+    // }
 
     await dbConnect();
 
     try {
         const { workerId, workId } = await req.json();
-
+        console.log(workId, workerId);
+        console.log("hi")
         // Check if the work exists
-        const work = await Work.findById(workId);
+        const work = await Work.findById(workId); // Use workId directly
+        console.log(work);
         if (!work) {
             return Response.json({ success: false, error: 'Work not found' });
         }
-
+       
         // Check if the worker exists
         const worker = await Worker.findById(workerId);
         if (!worker) {
@@ -30,6 +31,8 @@ export async function POST(req, res) {
         // Add worker to the acceptedWorkers array
         if (work.acceptedWorkers.includes(workerId)) {
             return Response.json({ success: false, error: 'Worker already accepted this work' });
+        } else {
+            work.totalWorkersRequired = work.totalWorkersRequired - 1;
         }
 
         work.acceptedWorkers.push(workerId);
@@ -47,10 +50,10 @@ export async function POST(req, res) {
 
 // get accepted works
 export async function GET(req, res) {
-    const authResult = await auth(req);
-    if (authResult.status === 401) {
-        return authResult; 
-    }
+    // const authResult = await auth(req);
+    // if (authResult.status === 401) {
+    //     return authResult; 
+    // }
     await dbConnect();
 
     try {
@@ -73,10 +76,10 @@ export async function GET(req, res) {
 
 // cancel the accepted work
 export async function DELETE(req, res) {
-    const authResult = await auth(req);
-    if (authResult.status === 401) {
-        return authResult; 
-    }
+    // const authResult = await auth(req);
+    // if (authResult.status === 401) {
+    //     return authResult; 
+    // }
     await dbConnect();
 
     try {

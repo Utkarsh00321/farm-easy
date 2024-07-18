@@ -1,14 +1,13 @@
 import dbConnect from '@/lib/dbConnect';
-import { auth } from '@/middleware/auth';
 import Farmer from '@/models/Farmer';
 import Vet from '@/models/Vet';
 
 // add vet to consulted 
 export async function PUT(req, res) {
-    const authResult = await auth(req);
-    if (authResult.status === 401) {
-        return authResult; 
-    }
+    // const authResult = await auth(req);
+    // if (authResult.status === 401) {
+    //     return authResult; 
+    // }
     await dbConnect();
 
     try {
@@ -50,10 +49,10 @@ export async function PUT(req, res) {
 
 // delete the vet from consulted arrary
 export async function POST(req, res) {
-    const authResult = await auth(req);
-    if (authResult.status === 401) {
-        return authResult; 
-    }
+    // const authResult = await auth(req);
+    // if (authResult.status === 401) {
+    //     return authResult; 
+    // }
     await dbConnect();
 
     try {

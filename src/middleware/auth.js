@@ -13,6 +13,8 @@ export async function auth(req, res, next) {
         // const x = req.cookies;
         // console.log( "#######: ", x);
         // const token = req.cookies?.accessToken || (req.headers?.authorization?.replace("Bearer ", "") || "");
+        const { workData } = await req.json();
+        console.log(workData);
         const cookies = cookie.parse(req.headers.get('cookie') || '');
         const token = cookies.accessToken;
 
@@ -22,9 +24,7 @@ export async function auth(req, res, next) {
         }
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log("Decoded TOken: ", decodedToken);
-        const { workData } = await req.json();
-        console.log(workData.type);
+        console.log("Decoded Token: ", decodedToken);
 
         if (!workData.type) {
             throw new Error("Invalid fields");

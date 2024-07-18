@@ -1,9 +1,9 @@
 import dbConnect from "@/lib/dbConnect.js";
+import Farmer from "@/models/Farmer.js";
+import Vet from "@/models/Vet.js";
+import Worker from "@/models/Worker.js";
 import cookie from 'cookie';
 import { NextResponse } from 'next/server';
-import Farmer from "../../../../models/Farmer.js";
-import Vet from "../../../../models/Vet.js";
-import Worker from "../../../../models/Worker.js";
 
 export async function POST(req) {
   await dbConnect();
@@ -15,6 +15,8 @@ export async function POST(req) {
       sameSite: 'strict',
     };
     const { mobile, password, type } = await req.json();
+
+    console.log(mobile, password, type)
     
     if (!mobile || !password || !type) {
       throw new Error("All fields must be entered");
@@ -31,6 +33,7 @@ export async function POST(req) {
       throw new Error("Invalid user type");
     }
     
+    console.log(user);
     if (!user) throw new Error("Invalid Username");
     
     const isPasswordValid = await user.isPasswordCorrect(password);
@@ -53,6 +56,7 @@ export async function POST(req) {
 
     return response;
   } catch (error) {
+    console.log(error.message)
     return NextResponse.json({ message: error.message }, { status: 400 });
   }
 }

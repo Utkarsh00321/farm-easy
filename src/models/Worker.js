@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import mongoose from 'mongoose';
-import jwt from "jsonwebtoken"
 
 const workerSchema = new mongoose.Schema({
   name: {
@@ -57,6 +57,10 @@ workerSchema.methods.generateAccessToken = async function(){
       }
   )
 }
+
+workerSchema.methods.isPasswordCorrect = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 workerSchema.methods.generateRefreshToken = async function(){
   return jwt.sign(

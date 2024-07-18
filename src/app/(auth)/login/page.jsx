@@ -33,9 +33,10 @@ const page = () => {
 
             window.alert("Login Successfully");
             const userData = await res.data.user;
-            // console.log(userData);
+            console.log(userData);
 
             window.localStorage.setItem("user", JSON.stringify(userData));
+            console.log(data.type);
             if(data.type === "farmer") router.push("/home");
             else if(data.type === "doctor") router.push("/doctor-home");
             else router.push("/apply-for-work");

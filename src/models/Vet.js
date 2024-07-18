@@ -65,6 +65,9 @@ vetSchema.methods.generateAccessToken = async function () {
   )
 }
 
+vetSchema.methods.isPasswordCorrect = async function(candidatePassword) {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
 vetSchema.methods.generateRefreshToken = async function () {
   return jwt.sign(

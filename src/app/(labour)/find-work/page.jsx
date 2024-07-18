@@ -1,53 +1,27 @@
 "use client"
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import LabourPageLayout from "../LabourPageLayout";
 
 const page = () => {
 
-    const [allWorks, setAllWorks] = useState([]);
-    const [add, setAdd] = useState('');
-    
+    const [nearWork, setNearWork] = useState([]);
+    const [pincode, setPincode] = useState("");
 
-     const getData = async()=>{
-            try {
-                const res = await axios.get("/api/getWorks");
-
-                if(res.status !== 200) throw new Error("Error");
-
-                const data = await res.data.data;
-                console.log(data);
-
-                setAdd(data.add);
-                setAllWorks(data.works);
-            } catch (error) {
-                console.log(error.message);
-                window.alert("Error");
-            }
-        }
-
-    useEffect(()=>{
-       
-
-        getData();
-    }, [])
-
-
-    const handleOnClick = async(workId)=>{
+    const getData = async()=>{
+        
         try {
-            const user = JSON.parse(window.localStorage.getItem("user"));
-            const res = await axios.post("/api/worker", {workerId: user._id, workId: workId})
-            console.log('response recieved 0',res)
-            
+            const res = await axios.get("/api/getWorkByLoc", {
+                params: { pincode: pincode }  // or simply { pincode } for ES6 shorthand
+            }   )
 
-            if(res.data.success){
+            if(res.status !== 201) throw new Error("Error");
 
-                setAdd(res.add);
-                setAllWorks(res.works);
-            }
-            
+            const data = await res.data.data;
+            console.log(data);
+            setNearWork(data);
         } catch (error) {
             console.log(error.message);
             window.alert("Error");
@@ -63,8 +37,8 @@ const page = () => {
                     <div className="h-full w-[10%] flex items-center justify-center border-r-2">
                         INDIA
                     </div>
-                    <input type="text"  className="h-full w-[70%] px-5 outline-0" placeholder="Enter pin-code" />
-                    <button className="bg-[#32a84b] w-[20%] text-white font-semibold flex items-center justify-center gap-2">
+                    <input type="text" onChange={(e)=>setPincode(e.target.value)} value={pincode} className="h-full w-[70%] px-5 outline-0" placeholder="Enter pin-code" />
+                    <button onClick={getData} className="bg-[#32a84b] w-[20%] text-white font-semibold flex items-center justify-center gap-2">
                         <CiSearch size={20} />
                         Find
                     </button>
@@ -74,7 +48,7 @@ const page = () => {
                 <p className="text-lg font-semibold">Vets near your area</p>
                 <div className="flex flex-col items-center mt-5 gap-5">
                     {
-                        allWorks.map((item, ind) => (
+                        nearWork.map((item, ind) => (
                             <div key={ind} className="relative h-auto w-[90%] bg-white p-6 flex gap-4 rounded-md drop-shadow-md hover:drop-shadow-xl border">
                                 {/* <p className="absolute right-0 top-0 p-2 px-3 bg-[#32a84b] text-white"> 12 June 2023</p> */}
                                 <div className="w-[70%]">

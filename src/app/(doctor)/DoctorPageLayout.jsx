@@ -1,9 +1,27 @@
 "use client"
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const DoctorPageLayout = ({ children }) => {
 
   const [menu, setMenu] = useState(false);
+
+  const router = useRouter();
+
+  const handleLogoutClick = async()=>{
+    try {
+      const res = await axios.get("/api/auth/logout");
+      if(res.status !== 200) throw new Error("Error");
+
+      window.alert("Successfully logout");
+      window.localStorage.removeItem("user");
+      router.push("/");
+    } catch (error) {
+      console.log(error)
+      window.alert("Error while logging out");
+    }
+  }
 
   return (
     <div className="relative min-h-screen w-screen bg-white text-black">
@@ -16,7 +34,7 @@ const DoctorPageLayout = ({ children }) => {
             menu &&
             <div className="absolute h-auto w-[16rem] bg-white top-[3.8rem] right-0 py-4 rounded-b-md">
               <div className="text-lg h-[3rem] px-8 hover:bg-slate-300 flex items-center cursor-pointer transition">Vilas Rabad</div>
-              <div className="text-lg h-[3rem] px-8 hover:bg-slate-300 flex items-center cursor-pointer transition">Logout</div>
+              <div onClick={handleLogoutClick} className="text-lg h-[3rem] px-8 hover:bg-slate-300 flex items-center cursor-pointer transition">Logout</div>
             </div>
           }
         </div>

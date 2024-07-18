@@ -10,6 +10,8 @@ export async function GET(req) {
             sameSite: 'strict'
         };
 
+        console.log("errr")
+
         const serializedCookie = cookie.serialize('accessToken', '', options);
 
         const response = NextResponse.json({ message: "Logged out successfully" }, { status: 200 });
@@ -17,6 +19,7 @@ export async function GET(req) {
 
         return response;
     } catch (error) {
+        console.log(error.message);
         return NextResponse.json({ message: error.message }, { status: 400 });
     }
 }

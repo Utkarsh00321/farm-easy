@@ -9,13 +9,13 @@ export default function Home() {
         </div>
         <div className="px-12 min-h-[90vh] w-full bg- flex flex-col items-center justify-center bg-gradient-to-b from-[#16513F] to-[#5D9C59]
        text-white">
-          <p className="w-[50%] text-center mb-4 text-4xl">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</p>
+          <p className="w-[50%] text-center mb-4 text-4xl">Empowering Farmers and Workers: Connecting Talent with Opportunities in Agriculture.</p>
           <div className="flex gap-3">
             <Link href="/register" className="rounded-xl px-5 py-1 bg-[#32a84b] text-white border-2  border-[#32a84b] hover:bg-transparent transition">Register</Link>
             <Link href="/login" className="rounded-xl px-5 py-1 border-2  border-[#32a84b] hover:bg-[#32a84b] transition text-white">Login</Link>
           </div>
         </div>
-        <div className="h-screen w-full px-12 flex flex-col items-center">
+        {/* <div className="h-screen w-full px-12 flex flex-col items-center">
           <p className="text-xl font-bold mt-24">Features</p>
           <div className="w-full flex justify-center mt-24 gap-8">
             <div className="h-[25rem] w-[20rem] bg-white drop-shadow-lg">
@@ -49,7 +49,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

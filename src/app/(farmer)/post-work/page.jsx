@@ -1,5 +1,7 @@
 "use client"
 import apiClient from "@/components/ApiClient";
+import cookie from 'js-cookie';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LiaRupeeSignSolid } from "react-icons/lia";
 import FarmerLayout from "../FarmerLayout";
@@ -15,7 +17,9 @@ const page = () => {
     type: "farmer"
   });
 
-  const [posts, setPosts] = useState({});
+  const router = useRouter();
+
+  const [posts, setPosts] = useState([]);
 
   const handleOnChangeInput = (e) => {
     const { name, value } = e.target;
@@ -27,15 +31,25 @@ const page = () => {
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    try {
-      const { _id } = window.localStorage.getItem("user");
-      const data = { farmer: _id, workData };
+    try { 
+      const user = JSON.parse(window.localStorage.getItem("user"));
+      console.log(user._id);
+
+      const data = { farmer: user._id, workData };
       const res = await apiClient.post('/api/farmer', data);
 
-      console.log(res);
+      console.log(res.data);
       if (res.status !== 200) throw new Error("Error while registering");
 
       window.alert("Post successfully");
+      setWorkData({
+        jobTitle: "",
+        jobDescription: "",
+        totalWorkersRequired: "",
+        totalDays: "",
+        payPerHour: "",
+        type: "farmer"
+      });
     } catch (error) {
       console.error("Error:", error);
       window.alert("Server error");
@@ -45,20 +59,28 @@ const page = () => {
 
   const fetchData = async () => {
     try {
-      const userString = window.localStorage.getItem("user");
-      const user = JSON.parse(userString);
-      console.log(user._id);
+      const user = JSON.parse(window.localStorage.getItem("user"));
+      // console.log(user);
 
       const res = await apiClient.get(`/api/farmer?farmerId=${user._id}`);
 
+      if(res.status === 401){
+        window.localStorage.removeItem("user");
+        router.push("/login");
+      }
       if (res.status !== 200) throw new Error("Server error");
 
-      const data = res.data.data;
-      console.log(data);
+      const data = await res.data;
+      console.log(data.data);
        // Check if component is still mounted before setting state
-        setPosts(data);
+      setPosts(data.data);
       
     } catch (error) {
+      const accessToken =  cookie.get('accessToken')
+      if(error.response.status === 401 && !accessToken) {
+        window.localStorage.removeItem("user");
+        router.push("/login");
+      }
       window.alert("Error fetching data");
     }
   }
@@ -109,25 +131,25 @@ const page = () => {
         <p className="text-xl font-semibold mt-2">Your past works</p>
         <div className="flex flex-col items-center mt-5 gap-5">
           {
-            // posts.map((item, ind) => (
-            //   <div key={ind} className="h-auto w-[90%] bg-white p-6 flex gap-4 rounded-md drop-shadow-md hover:drop-shadow-lg border">
-            //     <div className="w-[70%]">
-            //       <p className="text-lg font-semibold mb-2">{item.jobTitle}</p>
-            //       <p>Description: {item.jobDescription}</p>
-            //     </div>
-            //     <div className="w-[30%] flex flex-col justify-center">
-            //       <p><span className="font-semibold">Number of labours:</span> {item.totalWorkersRequired}</p>
-            //       <div className="flex items-center gap-2">
-            //         <span className="font-semibold">Pay per hour:</span>
-            //         <div className="flex items-center">
-            //           <LiaRupeeSignSolid size={20} color="#00000" className="text-black" />
-            //           {item.payPerHour}
-            //         </div>
-            //       </div>
-            //       <p><span className="font-semibold">Number of days: </span> {item.totalDays}</p>
-            //     </div>
-            //   </div>
-            // ))
+            posts.map((item, ind) => (
+              <div key={ind} className="h-auto w-[90%] bg-white p-6 flex gap-4 rounded-md drop-shadow-md hover:drop-shadow-lg border">
+                <div className="w-[70%]">
+                  <p className="text-lg font-semibold mb-2">{item.jobTitle}</p>
+                  <p>Description: {item.jobDescription}</p>
+                </div>
+                <div className="w-[30%] flex flex-col justify-center">
+                  <p><span className="font-semibold">Number of labours:</span> {item.totalWorkersRequired}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">Pay per hour:</span>
+                    <div className="flex items-center">
+                      <LiaRupeeSignSolid size={20} color="#00000" className="text-black" />
+                      {item.payPerHour}
+                    </div>
+                  </div>
+                  <p><span className="font-semibold">Number of days: </span> {item.totalDays}</p>
+                </div>
+              </div>
+            ))
           }
         </div>
       </div>

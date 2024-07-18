@@ -8,17 +8,20 @@ export async function POST(req) {
   await dbConnect();
   try {
     // console.log(req.json());
-    const { name, mobile, address, password, type } = await req.json();
+    let { name, mobile, address, password, type, specialization, consultationFees } = await req.json();
+    console.log(name, mobile, address, password, type);
+    address = `${address}`;
     console.log(name);
 
     if (!name || !mobile || !address || !password || !type) throw new Error("All fields required");
 
     let user, createdUser;
-
+    
+    console.log("CCCC")
     if (type === "farmer") {
       const existUser = await Farmer.findOne({ mobileNumber: mobile });
       if (existUser) throw new Error("User already exists");
-
+      
       user = await Farmer.create({
         name,
         mobileNumber: mobile,
@@ -31,11 +34,17 @@ export async function POST(req) {
       if (!createdUser) throw new Error("Something went wrong while registering user");
 
     } else if (type === "doctor") {
-      const { specialization } = await req.json();
+      console.log("check 2")
+      // const data = await req.json();
+      // console.log(data); 
+      // const { specialization } = await req.json();
+      console.log(specialization)
       if (!specialization) throw new Error("All fields required");
 
       const existUser = await Vet.findOne({ mobileNumber: mobile });
       if (existUser) throw new Error("User already exists");
+
+      console.log("check 2")
 
       user = await Vet.create({
         name,
@@ -43,16 +52,22 @@ export async function POST(req) {
         specialization,
         location: address,
         password,
+        consultationFees,
       });
 
+      console.log("check 3")
+      
+      
       createdUser = await Vet.findOne({ _id: user._id }).select("-password -refreshToken");
-
+      console.log("check 4")
+      
       if (!createdUser) throw new Error("Something went wrong while registering user");
-
+      
     } else if (type === "worker") {
       const existUser = await Worker.findOne({ mobileNumber: mobile });
       if (existUser) throw new Error("User already exists");
-
+      
+      console.log("check 5")
       user = await Worker.create({
         name,
         mobileNumber: mobile,

@@ -14,7 +14,8 @@ const Page = () => {
     mobile: "",
     address: "",
     password: "",
-    specialization: ""
+    specialization: "",
+    consultationFees: 0
   });
   const router = useRouter();
 
@@ -60,8 +61,8 @@ const Page = () => {
           <input onChange={handleOnChangeInput} value={data.mobile} type="text" name="mobile" className="h-[2.5rem] border-2 border-black rounded-md px-2 text-md" required />
         </div>
         <div className="flex flex-col gap-1 mt-2">
-          <label htmlFor="">Address</label>
-          <input onChange={handleOnChangeInput} value={data.address} type="text" name="address" className="h-[2.5rem] border-2 border-black rounded-md px-2 text-md" required />
+          <label htmlFor="">Pincode</label>
+          <input onChange={handleOnChangeInput} value={data.address} type="number" name="address" className="h-[2.5rem] border-2 border-black rounded-md px-2 text-md" required />
         </div>
         {data.type === "doctor" && (
           <div className="flex flex-col gap-1 mt-2">
