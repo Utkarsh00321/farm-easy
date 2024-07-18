@@ -1,7 +1,13 @@
 import dbConnect from '@/lib/dbConnect';
+import { auth } from '@/middleware/auth';
 import Work from '@/models/Work';
 
 export async function GET(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
+
     await dbConnect();
 
     try {

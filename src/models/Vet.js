@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import mongoose from 'mongoose';
-import jwt from "jsonwebtoken"
 
 const vetSchema = new mongoose.Schema({
   name: {
@@ -12,7 +12,7 @@ const vetSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    type: String,                  
+    type: String,
     required: true
   },
   availabilityStatus: {
@@ -36,11 +36,11 @@ const vetSchema = new mongoose.Schema({
   consultationFees: {
     type: Number,
     required: true
-  }
-  refreshToken:{
-    type:String,
-   },
-}, {timestamps: true});
+  },
+  refreshToken: {
+    type: String,
+  },
+}, { timestamps: true });
 
 
 vetSchema.pre("save", async function (next) {
@@ -52,29 +52,29 @@ vetSchema.pre("save", async function (next) {
   return next();
 });
 
-vetSchema.methods.generateAccessToken = async function(){
+vetSchema.methods.generateAccessToken = async function () {
   return jwt.sign(
-      {
-          _id: this._id,
-          mobileNumber: this.mobileNumber
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-      }
+    {
+      _id: this._id,
+      mobileNumber: this.mobileNumber
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+    }
   )
 }
 
 
-vetSchema.methods.generateRefreshToken = async function(){
+vetSchema.methods.generateRefreshToken = async function () {
   return jwt.sign(
-      {
-          _id: this._id
-      },
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-      }
+    {
+      _id: this._id
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    }
   )
 }
 

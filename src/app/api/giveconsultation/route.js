@@ -1,8 +1,13 @@
 import dbConnect from '@/lib/dbConnect';
-import Vet from '@/models/Vet';
+import { auth } from '@/middleware/auth';
 import Farmer from '@/models/Farmer';
+import Vet from '@/models/Vet';
 
 export async function PUT(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
     await dbConnect();
 
     try {
@@ -40,6 +45,10 @@ export async function PUT(req, res) {
 }
     
 export async function POST(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
     await dbConnect();
 
     try {

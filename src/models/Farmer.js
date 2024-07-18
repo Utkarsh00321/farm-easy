@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import mongoose from 'mongoose';
-import jwt from "jsonwebtoken"
 
 const farmerSchema = new mongoose.Schema({
   name: {

@@ -1,7 +1,12 @@
 import dbConnect from "@/lib/dbConnect";
+import { auth } from "@/middleware/auth";
 import Vet from "@/models/Vet";
 
 export async function GET(){
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
     await dbConnect();
     try {
         const vets = await Vet.find();

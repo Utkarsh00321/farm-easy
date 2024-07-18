@@ -2,7 +2,9 @@ import dbConnect from '@/lib/dbConnect';
 import Farmer from '@/models/Farmer';
 import Vet from '@/models/Vet';
 import Worker from '@/models/Worker';
+import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
 
 export async function auth(req, res, next) {
     await dbConnect();
@@ -10,7 +12,9 @@ export async function auth(req, res, next) {
 
         // const x = req.cookies;
         // console.log( "#######: ", x);
-        const token = req.cookies?.accessToken || (req.headers?.authorization?.replace("Bearer ", "") || "");
+        // const token = req.cookies?.accessToken || (req.headers?.authorization?.replace("Bearer ", "") || "");
+        const cookies = cookie.parse(req.headers.get('cookie') || '');
+        const token = cookies.accessToken;
 
         console.log("Token: ", token);
         if (!token) {
@@ -19,15 +23,16 @@ export async function auth(req, res, next) {
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         console.log("Decoded TOken: ", decodedToken);
-        const { type } = req.body;
+        const { workData } = await req.json();
+        console.log(workData.type);
 
-        if (!type) {
+        if (!workData.type) {
             throw new Error("Invalid fields");
         }
 
         let user;
 
-        switch (type) {
+        switch (workData.type) {
             case "farmer":
                 user = await Farmer.findOne({ _id: decodedToken._id });
                 break;
@@ -46,11 +51,9 @@ export async function auth(req, res, next) {
         }
 
         req.user = user; // Attach user object to request for further use if needed
-        next();
+        return NextResponse.next();
     } catch (error) {
-        return res.status(400).json({
-            statusCode: 400,
-            error: error.message
-        })
+        console.log(error.message);
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 }

@@ -1,9 +1,15 @@
 import dbConnect from '@/lib/dbConnect';
+import { auth } from '@/middleware/auth';
 import Work from '@/models/Work';
 import Worker from '@/models/Worker';
 
 // accept work
 export async function POST(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
+
     await dbConnect();
 
     try {
@@ -41,6 +47,10 @@ export async function POST(req, res) {
 
 // get accepted works
 export async function GET(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
     await dbConnect();
 
     try {
@@ -63,6 +73,10 @@ export async function GET(req, res) {
 
 // cancel the accepted work
 export async function DELETE(req, res) {
+    const authResult = await auth(req);
+    if (authResult.status === 401) {
+        return authResult; 
+    }
     await dbConnect();
 
     try {
